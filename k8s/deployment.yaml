@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goldcalc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goldcalc
+  template:
+    metadata:
+      labels:
+        app: goldcalc
+    spec:
+      containers:
+      - name: goldcalc
+        image: goldcalc:local
+        ports:
+        - containerPort: 5000

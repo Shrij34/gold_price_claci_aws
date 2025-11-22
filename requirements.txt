@@ -1,0 +1,4 @@
+Flask
+weasyprint
+prometheus_client
+gunicorn

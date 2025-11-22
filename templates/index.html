@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Jewellery Price Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 25%, #fff2a6 50%, #ffed4e 75%, #ffd700 100%);
+            min-height: 100%;
+        }
+        
+        .gold-gradient {
+            background: linear-gradient(135deg, #d4af37, #ffd700, #ffed4e);
+        }
+        
+        .gold-shadow {
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+        
+        .jewel-sparkle {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .jewel-sparkle::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+            transform: rotate(45deg);
+            animation: sparkle 3s infinite;
+        }
+        
+        @keyframes sparkle {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .diamond-icon {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb, #90caf9);
+            clip-path: polygon(50% 0%, 0% 50%, 50% 100%, 100% 50%);
+        }
+    </style>
+</head>
+<body class="min-h-full p-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="flex justify-center items-center mb-4">
+                <div class="diamond-icon w-12 h-12 mr-4"></div>
+                <h1 class="text-4xl font-bold text-amber-900">Gold Jewellery Price Calculator</h1>
+                <div class="diamond-icon w-12 h-12 ml-4"></div>
+            </div>
+            <p class="text-amber-800 text-lg">Calculate the perfect price for your precious gold jewelry</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Calculator Form -->
+            <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 gold-shadow jewel-sparkle">
+                <h2 class="text-2xl font-bold text-amber-900 mb-6 text-center">💎 Jewelry Details</h2>
+                
+                <form id="calculatorForm" class="space-y-6">
+                    <!-- Jewelry Type -->
+                    <div>
+                        <label class="block text-amber-800 font-semibold mb-2">
+                            💍 Jewelry Type
+                        </label>
+                        <select id="jewelryType" class="w-full p-4 border-2 border-amber-200 rounded-xl focus:border-amber-500 focus:outline-none bg-gradient-to-r from-amber-50 to-yellow-50">
+                            <option value="">Select Jewelry Type</option>
+                            <option value="ring">💍 Ring</option>
+                            <option value="necklace">📿 Necklace</option>
+                            <option value="earrings">👂 Earrings</option>
+                            <option value="bracelet">🔗 Bracelet</option>
+                            <option value="chain">⛓️ Chain</option>
+                            <option value="pendant">🔸 Pendant</option>
+                            <option value="bangles">💫 Bangles</option>
+                            <option value="anklet">🦶 Anklet</option>
+                        </select>
+                    </div>
+
+                    <!-- Gold Rate -->
+                    <div>
+                        <label class="block text-amber-800 font-semibold mb-2">
+                            💰 Gold Rate (₹/gram)
+                        </label>
+                        <input type="number" id="goldRate" placeholder="Enter current gold rate" 
+                               class="w-full p-4 border-2 border-amber-200 rounded-xl focus:border-amber-500 focus:outline-none bg-gradient-to-r from-amber-50 to-yellow-50">
+                    </div>
+
+                    <!-- Gold Carat -->
+                    <div>
+                        <label class="block text-amber-800 font-semibold mb-2">
+                            ✨ Gold Carat (e.g., 22)
+                        </label>
+                        <input type="number" id="goldCarat" placeholder="Enter gold carat (18, 22, 24)" 
+                               class="w-full p-4 border-2 border-amber-200 rounded-xl focus:border-amber-500 focus:outline-none bg-gradient-to-r from-amber-50 to-yellow-50">
+                    </div>
+
+                    <!-- Weight -->
+                    <div>
+                        <label class="block text-amber-800 font-semibold mb-2">
+                            ⚖️ Weight (grams)
+                        </label>
+                        <input type="number" step="0.01" id="weight" placeholder="Enter weight in grams" 
+                               class="w-full p-4 border-2 border-amber-200 rounded-xl focus:border-amber-500 focus:outline-none bg-gradient-to-r from-amber-50 to-yellow-50">
+                    </div>
+
+                    <!-- Making Charges -->
+                    <div>
+                        <label class="block text-amber-800 font-semibold mb-2">
+                            🔨 Making Charges (%)
+                        </label>
+                        <input type="number" step="0.01" id="makingCharges" placeholder="Enter making charges percentage" 
+                               class="w-full p-4 border-2 border-amber-200 rounded-xl focus:border-amber-500 focus:outline-none bg-gradient-to-r from-amber-50 to-yellow-50">
+                    </div>
+
+                    <!-- Wastage -->
+                    <div>
+                        <label class="block text-amber-800 font-semibold mb-2">
+                            📉 Wastage (%)
+                        </label>
+                        <input type="number" step="0.01" id="wastage" placeholder="Enter wastage percentage" 
+                               class="w-full p-4 border-2 border-amber-200 rounded-xl focus:border-amber-500 focus:outline-none bg-gradient-to-r from-amber-50 to-yellow-50">
+                    </div>
+
+                    <!-- Calculate Button -->
+                    <button type="submit" class="w-full gold-gradient text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-lg">
+                        🧮 Calculate Price
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 gold-shadow">
+                <h2 class="text-2xl font-bold text-amber-900 mb-6 text-center">💎 Price Breakdown</h2>
+                
+                <div id="results" class="space-y-4 hidden">
+                    <div class="bg-gradient-to-r from-amber-100 to-yellow-100 p-4 rounded-xl border-l-4 border-amber-500">
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-800 font-semibold">Base Gold Value:</span>
+                            <span id="baseValue" class="text-amber-900 font-bold">₹0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-orange-100 to-amber-100 p-4 rounded-xl border-l-4 border-orange-500">
+                        <div class="flex justify-between items-center">
+                            <span class="text-orange-800 font-semibold">Making Charges:</span>
+                            <span id="makingValue" class="text-orange-900 font-bold">₹0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-red-100 to-orange-100 p-4 rounded-xl border-l-4 border-red-500">
+                        <div class="flex justify-between items-center">
+                            <span class="text-red-800 font-semibold">Wastage Charges:</span>
+                            <span id="wastageValue" class="text-red-900 font-bold">₹0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-green-100 to-emerald-100 p-6 rounded-xl border-2 border-green-500 gold-shadow">
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-800 font-bold text-xl">💰 Total Price:</span>
+                            <span id="totalPrice" class="text-green-900 font-bold text-2xl">₹0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="noResults" class="text-center text-amber-600 py-12">
+                    <div class="text-6xl mb-4">💎</div>
+                    <p class="text-lg">Fill in the details above to calculate the jewelry price</p>
+                </div>
+
+                <!-- Download Button -->
+                <button id="downloadBtn" class="w-full mt-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-lg hidden">
+                    📄 Download Receipt (PDF)
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-amber-800">
+            <p class="text-sm">✨ Crafted with precision for your precious jewelry ✨</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const jewelryType = document.getElementById('jewelryType').value;
+            const goldRate = parseFloat(document.getElementById('goldRate').value);
+            const goldCarat = parseFloat(document.getElementById('goldCarat').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const makingCharges = parseFloat(document.getElementById('makingCharges').value) || 0;
+            const wastage = parseFloat(document.getElementById('wastage').value) || 0;
+            
+            if (!jewelryType || !goldRate || !goldCarat || !weight) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Calculate purity factor (e.g., 22K = 22/24 = 0.916)
+            const purityFactor = goldCarat / 24;
+            
+            // Base gold value
+            const baseValue = goldRate * weight * purityFactor;
+            
+            // Making charges
+            const makingValue = (baseValue * makingCharges) / 100;
+            
+            // Wastage charges
+            const wastageValue = (baseValue * wastage) / 100;
+            
+            // Total price
+            const totalPrice = baseValue + makingValue + wastageValue;
+            
+            // Display results
+            document.getElementById('baseValue').textContent = `₹${baseValue.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('makingValue').textContent = `₹${makingValue.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('wastageValue').textContent = `₹${wastageValue.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            document.getElementById('totalPrice').textContent = `₹${totalPrice.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+            
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('noResults').classList.add('hidden');
+            document.getElementById('downloadBtn').classList.remove('hidden');
+            
+            // Store calculation data for PDF
+            window.calculationData = {
+                jewelryType,
+                goldRate,
+                goldCarat,
+                weight,
+                makingCharges,
+                wastage,
+                baseValue,
+                makingValue,
+                wastageValue,
+                totalPrice
+            };
+        });
+        
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            if (!window.calculationData) return;
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const data = window.calculationData;
+            
+            // Header
+            doc.setFontSize(20);
+            doc.setTextColor(184, 134, 11);
+            doc.text('Gold Jewellery Price Receipt', 20, 30);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 45);
+            
+            // Details
+            let y = 65;
+            doc.text(`Jewelry Type: ${data.jewelryType.charAt(0).toUpperCase() + data.jewelryType.slice(1)}`, 20, y);
+            y += 10;
+            doc.text(`Gold Rate: ₹${data.goldRate}/gram`, 20, y);
+            y += 10;
+            doc.text(`Gold Carat: ${data.goldCarat}K`, 20, y);
+            y += 10;
+            doc.text(`Weight: ${data.weight} grams`, 20, y);
+            y += 10;
+            doc.text(`Making Charges: ${data.makingCharges}%`, 20, y);
+            y += 10;
+            doc.text(`Wastage: ${data.wastage}%`, 20, y);
+            
+            // Breakdown
+            y += 20;
+            doc.setFontSize(14);
+            doc.text('Price Breakdown:', 20, y);
+            doc.setFontSize(12);
+            y += 15;
+            doc.text(`Base Gold Value: ₹${data.baseValue.toLocaleString('en-IN', {maximumFractionDigits: 2})}`, 20, y);
+            y += 10;
+            doc.text(`Making Charges: ₹${data.makingValue.toLocaleString('en-IN', {maximumFractionDigits: 2})}`, 20, y);
+            y += 10;
+            doc.text(`Wastage Charges: ₹${data.wastageValue.toLocaleString('en-IN', {maximumFractionDigits: 2})}`, 20, y);
+            
+            // Total
+            y += 20;
+            doc.setFontSize(16);
+            doc.setTextColor(34, 197, 94);
+            doc.text(`Total Price: ₹${data.totalPrice.toLocaleString('en-IN', {maximumFractionDigits: 2})}`, 20, y);
+            
+            // Footer
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Generated by Gold Jewellery Price Calculator', 20, 280);
+            
+            doc.save('gold-jewelry-receipt.pdf');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f10b7dc59f9bea',t:'MTc2MDU0OTQzMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+
+
+
+
+<!-- Ui Changes in index.html to add a button for downloading the receipt as a PDF. -->
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Jewellery Price Calculator</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        input, select { margin: 5px; padding: 5px; width: 200px; }
+        .result { margin-top: 20px; color: darkgreen; }
+        .logo { width: 100px; margin-bottom: 20px; }
+    </style>
+    <script>
+        function setDefaults() {
+            const type = document.getElementById("jewelry_type").value;
+            const making = document.getElementById("making");
+            const wastage = document.getElementById("wastage");
+
+            switch(type) {
+                case "ring":
+                    making.value = 20;
+                    wastage.value = 10;
+                    break;
+                case "chain":
+                    making.value = 30;
+                    wastage.value = 25;
+                    break;
+                case "bangle":
+                    making.value = 32;
+                    wastage.value = 30;
+                    break;
+                case "necklace":
+                    making.value = 35;
+                    wastage.value = 30;
+                    break;
+            }
+        }
+    </script>
+</head>
+<body>
+    Display the logo image
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Jewellery Logo" class="logo">
+
+    <h2>Gold Jewellery Price Calculator</h2>
+    <form method="post">
+        <label>Jewelry Type:</label><br>
+        <select name="jewelry_type" id="jewelry_type" onchange="setDefaults()">
+            <option value="ring">Ring (7–32%)</option>
+            <option value="chain">Chain (19–40%)</option>
+            <option value="bangle">Bangle/Bracelet (28–37%)</option>
+            <option value="necklace">Necklace/Mangalsutra (28–37%)</option>
+        </select><br>
+
+        <label>Gold Rate (₹/gram):</label><br>
+        <input type="number" name="rate"><br>
+        <label>Gold Carat (e.g., 22):</label><br>
+        <input type="number" name="carat"><br>
+        <label>Weight (grams):</label><br>
+        <input type="number" name="weight"><br>
+        <label>Making Charges (%):</label><br>
+        <input type="number" name="making" id="making"><br>
+        <label>Wastage (%):</label><br>
+        <input type="number" name="wastage" id="wastage"><br><br>
+        <input type="submit" value="Calculate">
+    </form>
+
+    {% if result %}
+        <div class="result">
+            {% if result == "Invalid input. Please enter valid numbers." %}
+                <p>{{ result }}</p>
+            {% else %}
+                <h3>Jewellery Price Breakdown</h3>
+                <p>Gold Rate: ₹{{ result.gold_rate }}</p>
+                <p>Carat: {{ result.carat }}K (Purity: {{ result.purity }}%)</p>
+                <p>Weight: {{ result.weight }} grams</p>
+                <p>Base Cost: ₹{{ result.base_cost }}</p>
+                <p>Wastage Charge: ₹{{ result.wastage_charge }}</p>
+                <p>Making Charge: ₹{{ result.making_charge_amt }}</p>
+                <p>Subtotal: ₹{{ result.subtotal }}</p>
+                <p>GST on Gold: ₹{{ result.gst_gold_amt }}</p>
+                <p>GST on Making: ₹{{ result.gst_making_amt }}</p>
+                <p>Total GST: ₹{{ result.total_gst }}</p>
+                <p><strong>Total Price: ₹{{ result.total_price }}</strong></p>
+                <form method="get" action="/receipt" target="_blank" style="margin-top:20px;">
+                    {% for key, value in result.items() %}
+                        <input type="hidden" name="{{ key }}" value="{{ value }}">
+                    {% endfor %}
+                    <button type="submit">Download Receipt (PDF)</button>
+                </form>
+            {% endif %}
+        </div>
+    {% endif %}
+</body>
+</html> -->
+
+
+
+<!-- ############## Before LAb ############## -->
+
+
+
+<!-- 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jewellery Price Calculator</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        input, select { margin: 5px; padding: 5px; width: 200px; }
+        .result { margin-top: 20px; color: darkgreen; }
+    </style>
+    <script>
+        function setDefaults() {
+            const type = document.getElementById("jewelry_type").value;
+            const making = document.getElementById("making");
+            const wastage = document.getElementById("wastage");
+
+            switch(type) {
+                case "ring":
+                    making.value = 20;
+                    wastage.value = 10;
+                    break;
+                case "chain":
+                    making.value = 30;
+                    wastage.value = 25;
+                    break;
+                case "bangle":
+                    making.value = 32;
+                    wastage.value = 30;
+                    break;
+                case "necklace":
+                    making.value = 35;
+                    wastage.value = 30;
+                    break;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Gold Jewellery Price Calculator</h2>
+    <form method="post">
+        <label>Jewelry Type:</label><br>
+        <select name="jewelry_type" id="jewelry_type" onchange="setDefaults()">
+            <option value="ring">Ring (7–32%)</option>
+            <option value="chain">Chain (19–40%)</option>
+            <option value="bangle">Bangle/Bracelet (28–37%)</option>
+            <option value="necklace">Necklace/Mangalsutra (28–37%)</option>
+        </select><br>
+
+        <label>Gold Rate (₹/gram):</label><br>
+        <input type="number" name="rate"><br>
+        <label>Gold Carat (e.g., 22):</label><br>
+        <input type="number" name="carat"><br>
+        <label>Weight (grams):</label><br>
+        <input type="number" name="weight"><br>
+        <label>Making Charges (%):</label><br>
+        <input type="number" name="making" id="making"><br>
+        <label>Wastage (%):</label><br>
+        <input type="number" name="wastage" id="wastage"><br><br>
+        <input type="submit" value="Calculate">
+    </form>
+
+    {% if result %}
+        <div class="result">
+            {% if result == "Invalid input. Please enter valid numbers." %}
+                <p>{{ result }}</p>
+            {% else %}
+                <h3>Jewellery Price Breakdown</h3>
+                <p>Gold Rate: ₹{{ result.gold_rate }}</p>
+                <p>Carat: {{ result.carat }}K (Purity: {{ result.purity }}%)</p>
+                <p>Weight: {{ result.weight }} grams</p>
+                <p>Base Cost: ₹{{ result.base_cost }}</p>
+                <p>Wastage Charge: ₹{{ result.wastage_charge }}</p>
+                <p>Making Charge: ₹{{ result.making_charge_amt }}</p>
+                <p>Subtotal: ₹{{ result.subtotal }}</p>
+                <p>GST on Gold: ₹{{ result.gst_gold_amt }}</p>
+                <p>GST on Making: ₹{{ result.gst_making_amt }}</p>
+                <p>Total GST: ₹{{ result.total_gst }}</p>
+                <p><strong>Total Price: ₹{{ result.total_price }}</strong></p>
+                <form method="get" action="/receipt" target="_blank" style="margin-top:20px;">
+                    {% for key, value in result.items() %}
+                        <input type="hidden" name="{{ key }}" value="{{ value }}">
+                    {% endfor %}
+                    <button type="submit">Download Receipt (PDF)</button>
+                </form>
+            {% endif %}
+        </div>
+    {% endif %}
+</body>
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Jewellery Price Calculatorrrrr</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        input, select { margin: 5px; padding: 5px; width: 200px; }
+        .result { margin-top: 20px; color: darkgreen; }
+    </style>
+    <script>
+        function setDefaults() {
+            const type = document.getElementById("jewelry_type").value;
+            const making = document.getElementById("making");
+            const wastage = document.getElementById("wastage");
+
+            switch(type) {
+                case "ring":
+                    making.value = 20;
+                    wastage.value = 10;
+                    break;
+                case "chain":
+                    making.value = 30;
+                    wastage.value = 25;
+                    break;
+                case "bangle":
+                    making.value = 32;
+                    wastage.value = 30;
+                    break;
+                case "necklace":
+                    making.value = 35;
+                    wastage.value = 30;
+                    break;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Gold Jewellery Price Calculator</h2>
+    <form method="post">
+        <label>Jewelry Type:</label><br>
+        <select name="jewelry_type" id="jewelry_type" onchange="setDefaults()">
+            <option value="ring">Ring (7–32%)</option>
+            <option value="chain">Chain (19–40%)</option>
+            <option value="bangle">Bangle/Bracelet (28–37%)</option>
+            <option value="necklace">Necklace/Mangalsutra (28–37%)</option>
+        </select><br>
+
+        <label>Gold Rate (₹/gram):</label><br>
+        <input type="number" name="rate"><br>
+        <label>Gold Carat (e.g., 22):</label><br>
+        <input type="number" name="carat"><br>
+        <label>Weight (grams):</label><br>
+        <input type="number" name="weight"><br>
+        <label>Making Charges (%):</label><br>
+        <input type="number" name="making" id="making"><br>
+        <label>Wastage (%):</label><br>
+        <input type="number" name="wastage" id="wastage"><br><br>
+        <input type="submit" value="Calculate">
+    </form>
+
+    {% if result %}
+        <div class="result">
+            {% if result == "Invalid input. Please enter valid numbers." %}
+                <p>{{ result }}</p>
+            {% else %}
+                <h3>Jewellery Price Breakdown</h3>
+                <p>Gold Rate: ₹{{ result.gold_rate }}</p>
+                <p>Carat: {{ result.carat }}K (Purity: {{ result.purity }}%)</p>
+                <p>Weight: {{ result.weight }} grams</p>
+                <p>Base Cost: ₹{{ result.base_cost }}</p>
+                <p>Wastage Charge: ₹{{ result.wastage_charge }}</p>
+                <p>Making Charge: ₹{{ result.making_charge_amt }}</p>
+                <p>Subtotal: ₹{{ result.subtotal }}</p>
+                <p>GST on Gold: ₹{{ result.gst_gold_amt }}</p>
+                <p>GST on Making: ₹{{ result.gst_making_amt }}</p>
+                <p>Total GST: ₹{{ result.total_gst }}</p>
+                <p><strong>Total Price: ₹{{ result.total_price }}</strong></p>
+            {% endif %}
+        </div>
+    {% endif %}
+</body>
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Jewellery Price Calculator</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        input { margin: 5px; padding: 5px; width: 200px; }
+        .result { margin-top: 20px; color: darkgreen; }
+    </style>
+</head>
+<body>
+    <h2>Gold Jewellery Price Calculatorrrrrrrr</h2>
+    <form method="post">
+        <label>Gold Rate (₹/gram):</label><br>
+        <input type="number" name="rate"><br>
+        <label>Gold Carat (e.g., 22):</label><br>
+        <input type="number" name="carat"><br>
+        <label>Weight (grams):</label><br>
+        <input type="number" name="weight"><br>
+        <label>Making Charges (%):</label><br>
+        <input type="number" name="making"><br>
+        <label>Wastage (%):</label><br>
+        <input type="number" name="wastage"><br>
+        <label>GST (%):</label><br>
+        <input type="number" name="gst"><br><br>
+        <input type="submit" value="Calculate">
+    </form>
+
+    {% if result %}
+        <div class="result">
+            {% if result == "Invalid input. Please enter valid numbers." %}
+                <p>{{ result }}</p>
+            {% else %}
+                <h3>Jewellery Price Breakdown</h3>
+                <p>Gold Rate: ₹{{ result.gold_rate }}</p>
+                <p>Carat: {{ result.carat }}K (Purity: {{ result.purity }}%)</p>
+                <p>Weight: {{ result.weight }} grams</p>
+                <p>Base Cost: ₹{{ result.base_cost }}</p>
+                <p>Wastage Charge: ₹{{ result.wastage_charge }}</p>
+                <p>Making Charge: ₹{{ result.making_charge_amt }}</p>
+                <p>Subtotal: ₹{{ result.subtotal }}</p>
+                <p>GST: ₹{{ result.gst_amt }}</p>
+                <p><strong>Total Price: ₹{{ result.total_price }}</strong></p>
+            {% endif %}
+        </div>
+    {% endif %}
+</body>
+</html> --> --> -->
