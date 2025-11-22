@@ -1,17 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <title>Jewellery Price Receipt</title>
     <style>
-        body { font-family: Arial; margin: 40px; }
-        h2 { color: darkblue; }
-        .section { margin-bottom: 10px; }
-        .logo { width: 120px; margin-bottom: 20px; }
-        .footer { margin-top: 40px; font-size: 12px; color: gray; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            color: #222;
+        }
+        h2 { 
+            color: darkblue; 
+            margin-bottom: 20px; 
+        }
+        .section { 
+            margin-bottom: 10px; 
+            font-size: 15px;
+        }
+        .logo { 
+            width: 120px; 
+            margin-bottom: 20px; 
+        }
+        hr { 
+            margin-top: 25px; 
+            margin-bottom: 15px; 
+        }
+        .footer { 
+            margin-top: 30px; 
+            font-size: 12px; 
+            color: gray; 
+        }
     </style>
 </head>
 <body>
-    <img src="{{ url_for('static', filename='logo.png') }}" class="logo">
+
+    <!-- Logo -->
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
+
+    <!-- Title -->
     <h2>Jewellery Price Receipt</h2>
+
+    <!-- Receipt Details -->
     <div class="section">Gold Rate: ₹{{ result.gold_rate }}</div>
     <div class="section">Carat: {{ result.carat }}K (Purity: {{ result.purity }}%)</div>
     <div class="section">Weight: {{ result.weight }} grams</div>
@@ -21,37 +50,18 @@
     <div class="section">Subtotal: ₹{{ result.subtotal }}</div>
     <div class="section">GST on Gold: ₹{{ result.gst_gold_amt }}</div>
     <div class="section">GST on Making: ₹{{ result.gst_making_amt }}</div>
-    <div class="section"><strong>Total Price: ₹{{ result.total_price }}</strong></div>
+
+    <div class="section">
+        <strong>Total Price: ₹{{ result.total_price }}</strong>
+    </div>
+
     <hr>
+
+    <!-- Footer -->
     <div class="footer">
         Thank you for using our calculator.<br>
         Generated on {{ result.timestamp if result.timestamp else "current date" }}
     </div>
+
 </body>
 </html>
-
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body { font-family: Arial; margin: 40px; }
-        h2 { color: darkblue; }
-        .section { margin-bottom: 10px; }
-    </style>
-</head>
-<body>
-    <h2>Jewellery Price Receipt</h2>
-    <div class="section">Gold Rate: ₹{{ result.gold_rate }}</div>
-    <div class="section">Carat: {{ result.carat }}K (Purity: {{ result.purity }}%)</div>
-    <div class="section">Weight: {{ result.weight }} grams</div>
-    <div class="section">Base Cost: ₹{{ result.base_cost }}</div>
-    <div class="section">Wastage Charge: ₹{{ result.wastage_charge }}</div>
-    <div class="section">Making Charge: ₹{{ result.making_charge_amt }}</div>
-    <div class="section">Subtotal: ₹{{ result.subtotal }}</div>
-    <div class="section">GST on Gold: ₹{{ result.gst_gold_amt }}</div>
-    <div class="section">GST on Making: ₹{{ result.gst_making_amt }}</div>
-    <div class="section"><strong>Total Price: ₹{{ result.total_price }}</strong></div>
-    <hr>
-    <p>Thank you for using our calculator!</p>
-</body>
-</html> -->
