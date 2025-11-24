@@ -1,7 +1,40 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: goldcalc
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: goldcalc
+#   template:
+#     metadata:
+#       labels:
+#         app: goldcalc
+#     spec:
+#       containers:
+#       - name: goldcalc
+#         image: goldcalc-app:latest
+#         ports:
+#         - containerPort: 5000
+#         envFrom:
+#         - configMapRef:
+#             name: goldcalc-config
+#         livenessProbe:
+#           httpGet:
+#             path: /health
+#             port: 5000
+#           initialDelaySeconds: 5
+#         readinessProbe:
+#           httpGet:
+#             path: /health
+#             port: 5000
+#           initialDelaySeconds: 3
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: goldcalc
+  namespace: goldapp
 spec:
   replicas: 1
   selector:
@@ -11,9 +44,33 @@ spec:
     metadata:
       labels:
         app: goldcalc
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
+        prometheus.io/path: "/metrics"
     spec:
       containers:
       - name: goldcalc
-        image: goldcalc:local
+        image: goldcalc-app:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 5000
+
+        # --- Health checks ---
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+
+        envFrom:
+        - configMapRef:
+            name: goldcalc-defaults

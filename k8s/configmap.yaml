@@ -1,6 +1,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: goldcalc-config
+  name: goldcalc-defaults
+  namespace: goldapp
 data:
-  SAMPLE: "true"
+  DEFAULT_MAKING_RING: "20"
+  DEFAULT_MAKING_CHAIN: "25"
+  DEFAULT_MAKING_BANGLE: "18"
+
+  DEFAULT_WASTAGE_RING: "10"
+  DEFAULT_WASTAGE_CHAIN: "12"
+  DEFAULT_WASTAGE_BANGLE: "9"
+
+  DEFAULT_GST_GOLD: "3.0"
+  DEFAULT_GST_MAKING: "5.0"
