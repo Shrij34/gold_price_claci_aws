@@ -1,0 +1,53 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# Installer/log files
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Test / coverage
+.tox/
+.nox/
+.pytest_cache/
+.coverage
+
+# IDEs and editors
+.idea/
+.vscode/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local secrets and config
+.env
+.env.*
+secrets.json
+
+# Node
+node_modules/
+
+# Git
+.git
+
+# Docker and compose contexts
+docker-compose*.yml
+.dockerignore
